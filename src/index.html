@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <title>Para Fazer</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Todo-List</h1>
+            <div class="divider w25"></div>
+        </header>  
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-title">
+                <h2>Para Fazer</h2>
+            </div>
+            <div class="divider w25"></div>
+            <div class="card-item-list">
+                <textarea rows="3" type="text" name="new-item" id="new-item"></textarea>
+                <button onclick="addItem()">Adicionar</button>
+                <div class="spacer"></div>
+                <button id="btn-show-archived" class="btn-show-archived" onclick="showArquiveds()">Mostar
+                    Arquivados</button>
+
+            </div>
+            <div id="list-todos">
+            </div>
+        </div>
+
+        <div id="archiveds" class="card">
+            <div class="card-title">
+                <h2>Arquivados</h2>
+            </div>
+            <div class="divider w25"></div>
+            <div id="list-todos-archiveds">
+            </div>
+        </div>
+    </div>
+    <script src="js/todoApp.js"></script>
+</body>
+
+</html>
