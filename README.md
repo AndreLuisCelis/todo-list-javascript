@@ -1,7 +1,7 @@
 
 # To-do List em JavaScript
 
-![To-do List Screenshot](https://via.placeholder.com/800x400)
+![To-do List Screenshot](src/assets/img1-todo.png)
 
 Um simples aplicativo de lista de tarefas (To-do List) construído utilizando HTML, CSS e JavaScript puro, sem backend. Este projeto tem como objetivo praticar a codificação em JavaScript e a manipulação de DOM.
 
@@ -22,7 +22,7 @@ Um simples aplicativo de lista de tarefas (To-do List) construído utilizando HT
 
 Aqui está uma prévia do aplicativo:
 
-![App Preview GIF](https://via.placeholder.com/400x300)
+![App Preview GIF](src/assets/img2-todo.png)
 
 ## 📦 Como Usar
 
