@@ -108,19 +108,53 @@
     box-shadow: none;
 }
 
-.spacer {
-    height: 135px;
-    width: 0;
+.todo-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    min-width: 0;
 }
 
-.card button.btn-show-archived {
-    position: absolute;
-    top: 110px;
-    right: 5px;
+.todo-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding-right: 5px;
 }
 
-.card button.btn-show-archived:active {
-    top: 111px;
+.todo-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 5px;
+}
+
+.todo-input-row button,
+.todo-actions button {
+    width: auto;
+    margin: 0;
+}
+
+.todo-actions button {
+    white-space: nowrap;
+}
+
+.archived-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 5px 5px;
+}
+
+.archived-actions button {
+    width: auto;
+    margin: 0;
 }
 
 .card-title h2 {
@@ -142,11 +176,22 @@
     background: radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(25,2,7,1) 100%);
 }
 
+#list-todos .card-item-list[draggable="true"] {
+    cursor: grab;
+}
+
+#list-todos .card-item-list.dragging {
+    cursor: grabbing;
+    opacity: 0.45;
+}
+
 .card-item-list #new-item {
     border: 2px solid #ccc;
     padding: 5px;
     padding-left: 10px;
-    width: 100%;
+    flex: 1 1 0;
+    min-width: 0;
+    box-sizing: border-box;
     border-radius: 10px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: #eee;
@@ -154,23 +199,43 @@
     margin: 5px;
 }
 
-.card-item-list label {
+.todo-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-end;
+    min-width: 0;
     margin-right: 5px;
     margin-left: 10px;
-    font-size: 1.3rem;
-    word-wrap: break-word;
-    word-break: break-all;
     color: white;
 }
 
-.card-item-list label p {
+.todo-content p {
+    align-self: stretch;
     margin: 0;
+    font-size: 1.3rem;
+    overflow-wrap: break-word;
+    word-break: normal;
 }
-.card-item-list label p:focus {
+
+.todo-date {
+    margin-bottom: 2px;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.todo-content p {
+    cursor: grab;
+}
+
+.todo-content p:focus {
     padding: 20px;
 }
 
-.card-item-list label:hover {
+.todo-content:hover {
     filter: brightness(150%);
 }
 
@@ -247,5 +312,13 @@
 
     .card {
         min-width: auto;
+    }
+}
+
+@media (max-width: 420px) {
+    .todo-actions button {
+        font-size: 12px;
+        padding-right: 3px;
+        padding-left: 3px;
     }
 }

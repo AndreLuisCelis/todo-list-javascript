@@ -3,6 +3,32 @@
 		const listTodosArchiveds = JSON.parse(localStorage.getItem("archiveds")) || [];
 		let viewArchiveds = false;
 		const inputNewItem = document.getElementById("new-item");
+		const todosContainer = document.getElementById("list-todos");
+		let draggedTodo = null;
+
+		const formatTodoDate = (createdAt) => {
+			if (!createdAt) {
+				return "";
+			}
+
+			const date = new Date(createdAt);
+			return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString("pt-BR");
+		};
+
+		const renderTodoContent = (todo) => {
+			const formattedDate = formatTodoDate(todo.createdAt);
+			const dateMarkup = formattedDate
+				? `<time class="todo-date" datetime="${todo.createdAt}">${formattedDate}</time>`
+				: "";
+
+			return `
+				<div class="todo-content">
+					${dateMarkup}
+					<p id="text-item-${todo.uid}" class="${todo.checked ? "text-line" : ""}">${todo.description}</p>
+				</div>
+			`;
+		};
+
 		inputNewItem.addEventListener('keypress',(e)=> {
 			if(e.code ==='Enter'){
 				addItem();
@@ -10,24 +36,21 @@
 		})
 
 		const loadTodos = () => {
-			const listItems = document.getElementById("list-todos");
-			listItems.innerHTML = "";
-			listTodos.map((todo) => {
+			todosContainer.innerHTML = "";
+			[...listTodos].reverse().forEach((todo) => {
 				if(!todo){
 					return;
 				}
-				listItems.insertAdjacentHTML(
-					"afterBegin",
+				todosContainer.insertAdjacentHTML(
+					"beforeEnd",
 					`
-        <div class="card-item-list ${todo.checked ? "bg-success" : "bg-white"}" id="card-item-${todo.uid}" >
+        <div class="card-item-list ${todo.checked ? "bg-success" : "bg-white"}" id="card-item-${todo.uid}" draggable="true">
 			<div>
             <input type="checkbox" name="sixth" id="item-${todo.uid}" onchange="inputChecked(event)" 
             ${todo.checked ? "checked" : ""} >
 			</div>
 
-            <label>
-				<p id="text-item-${todo.uid}" class = ${todo.checked ?"text-line":null} for="item${todo.uid}">${todo.description}</p>
-			</label>
+            ${renderTodoContent(todo)}
 			<div class="dropdown">
                 <button onclick="openMenu('myDropdown-${todo.uid}')" class="dropbtn">...</button>
                 <div id="myDropdown-${todo.uid}" class="dropdown-content">
@@ -49,9 +72,7 @@
 					"afterBegin",
 					`
         <div class="card-item-list ${todo.checked ? "bg-success" : "bg-white"}" id="card-item-${todo.uid}" >
-             <label>
-				<p id="text-item-${todo.uid}" class = ${todo.checked ?"text-line":null} for="item${todo.uid}">${todo.description}</p>
-			</label>
+             ${renderTodoContent(todo)}
             <div class="dropdown">
                 <button onclick="openMenu('myDropdown-${todo.uid}')" class="dropbtn">...</button>
                 <div id="myDropdown-${todo.uid}" class="dropdown-content">
@@ -72,6 +93,55 @@
 			localStorage.setItem("archiveds", JSON.stringify(listTodosArchiveds));
 		};
 
+		todosContainer.addEventListener("dragstart", (event) => {
+			const todoCard = event.target.closest(".card-item-list[draggable='true']");
+			if (!todoCard || event.target.closest("button, input, [contenteditable='true']")) {
+				event.preventDefault();
+				return;
+			}
+
+			draggedTodo = todoCard;
+			todoCard.classList.add("dragging");
+			event.dataTransfer.effectAllowed = "move";
+			event.dataTransfer.setData("text/plain", todoCard.id);
+		});
+
+		todosContainer.addEventListener("dragover", (event) => {
+			if (!draggedTodo) {
+				return;
+			}
+
+			event.preventDefault();
+			const targetCard = event.target.closest(".card-item-list[draggable='true']");
+			if (!targetCard || targetCard === draggedTodo) {
+				return;
+			}
+
+			const targetPosition = targetCard.getBoundingClientRect();
+			const insertAfter = event.clientY > targetPosition.top + targetPosition.height / 2;
+			todosContainer.insertBefore(draggedTodo, insertAfter ? targetCard.nextSibling : targetCard);
+		});
+
+		todosContainer.addEventListener("drop", (event) => {
+			if (!draggedTodo) {
+				return;
+			}
+
+			event.preventDefault();
+			const reorderedTodos = [...todosContainer.querySelectorAll(".card-item-list[draggable='true']")]
+				.map((todoCard) => listTodos.find((todo) => `card-item-${todo.uid}` === todoCard.id))
+				.filter(Boolean)
+				.reverse();
+
+			listTodos.splice(0, listTodos.length, ...reorderedTodos);
+			saveTodos();
+		});
+
+		todosContainer.addEventListener("dragend", () => {
+			draggedTodo?.classList.remove("dragging");
+			draggedTodo = null;
+		});
+
 		
 
 		const inputChecked = (event) => {
@@ -90,6 +160,7 @@
 					uid: uid,
 					description: inputNewItem.value,
 					checked: false,
+					createdAt: new Date().toISOString(),
 				});
 				saveTodos();
 				loadTodos();
@@ -109,6 +180,17 @@
 			saveArchiveTodos();
 			listTodos.splice(index, 1);
 			saveTodos();
+			update();
+		};
+
+		const archiveAllItems = () => {
+			if (listTodos.length === 0) {
+				return;
+			}
+
+			listTodosArchiveds.push(...listTodos.splice(0, listTodos.length));
+			saveTodos();
+			saveArchiveTodos();
 			update();
 		};
 
@@ -161,6 +243,16 @@
 				return;
 			}
 			listTodosArchiveds.splice(index, 1);
+			saveArchiveTodos();
+			update();
+		};
+
+		const deleteAllArchived = () => {
+			if (listTodosArchiveds.length === 0) {
+				return;
+			}
+
+			listTodosArchiveds.length = 0;
 			saveArchiveTodos();
 			update();
 		};

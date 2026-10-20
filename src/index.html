@@ -26,13 +26,15 @@
                 <h2>Para Fazer</h2>
             </div>
             <div class="divider w25"></div>
-            <div class="card-item-list">
-                <textarea rows="3" type="text" name="new-item" id="new-item"></textarea>
-                <button onclick="addItem()">Adicionar</button>
-                <div class="spacer"></div>
-                <button id="btn-show-archived" class="btn-show-archived" onclick="showArquiveds()">Mostar
-                    Arquivados</button>
-
+            <div class="card-item-list todo-controls">
+                <div class="todo-input-row">
+                    <textarea rows="3" type="text" name="new-item" id="new-item"></textarea>
+                    <button onclick="addItem()">Adicionar</button>
+                </div>
+                <div class="todo-actions">
+                    <button onclick="archiveAllItems()">Arquivar todos</button>
+                    <button id="btn-show-archived" onclick="showArquiveds()">Mostrar Arquivados</button>
+                </div>
             </div>
             <div id="list-todos">
             </div>
@@ -43,6 +45,9 @@
                 <h2>Arquivados</h2>
             </div>
             <div class="divider w25"></div>
+            <div class="archived-actions">
+                <button onclick="deleteAllArchived()">Excluir todos arquivados</button>
+            </div>
             <div id="list-todos-archiveds">
             </div>
         </div>
